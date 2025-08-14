@@ -1,8 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NFT Appraisal Oracle | Groq + Wallet + zkReceipt</title>
-  ...
+<meta charset="utf-8">
+<title>9-Model Prompt Runner</title>
+<style>
+body { font-family: sans-serif; background: #111; color: #eee; }
+textarea { width: 100%; height: 100px; }
+button { padding: 10px 20px; }
+.model-output { background: #222; margin: 10px 0; padding: 10px; border-radius: 5px; }
+.model-name { font-weight: bold; color: #ffae00; }
+</style>
+</head>
+<body>
+<h1>Local 9-Model Prompt Runner</h1>
+<textarea id="prompt" placeholder="Enter your prompt here"></textarea><br>
+<button onclick="sendPrompt()">Generate</button>
+<div id="results"></div>
+
+<script>
+async function sendPrompt() {
+    const prompt = document.getElementById("prompt").value;
+    const res = await fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    const container = document.getElementById("results");
+    container.innerHTML = "";
+    data.results.forEach(r => {
+        container.innerHTML += `
+            <div class="model-output">
+                <div class="model-name">${r.model}</div>
+                <div>${r.text || ("<i>" + r.error + "</i>")}</div>
+            </div>
+        `;
+    });
+}
+</script>
+</body>
 </html>
